@@ -1,7 +1,7 @@
 {
   "name": "YouTube PWA",
   "short_name": "YT App",
-  "start_url": "https://m.youtube.com",
+  "start_url": "https://mgiriradio.github.io/office/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff0000",
