@@ -1,7 +1,7 @@
 {
   "name": "YouTube PWA",
   "short_name": "YT App",
-  "start_url": "https://youtube.com",
+  "start_url": "https://m.youtube.com",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ff0000",
