@@ -1,9 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple PWA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Book Entry</title>
   <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {  font-family: 'Inter', sans-serif; }
+    body {
+      background: #f4f4f4; display: flex; justify-content: center;
+        
+    }
+
+    h1, h2 { text-align: center; color: #264601; }
+    h2 { font-size: 16px; color: #555; margin-bottom: 30px; }
+    label { font-weight: 600; margin-top: 10px; display: block; }
+    input, button {
+      width: 100%; padding: 10px; margin-top: 5px;
+      border-radius: 8px; font-size: 16px; border: 1px solid #ccc;
+    }
+    input:focus { border-color: #264601; outline: none; }
+    button {
+      background: #264601; color: white; margin-top: 20px;
+      font-weight: bold; cursor: pointer; border: none;
+      transition: background 0.3s ease;
+    }
+    button:hover { background: #1b3900; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    #response {
+      margin-top: 15px; padding: 10px;
+      border-radius: 8px; text-align: center;
+      display: none;
+    }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    .loading { background: #d1ecf1; color: #0c5460; }
+    .row-data {
+      margin-top: 15px; padding: 15px;
+      background: #e7f3ff; border: 1px solid #b3d9ff;
+      border-radius: 8px; text-align: left;
+    }
+    .row-data h3 { margin: 0 0 10px 0; color: #264601; }
+    .data-item { 
+      margin: 5px 0; padding: 5px; 
+      background: white; border-radius: 4px;
+      display: flex; justify-content: space-between;
+    }
+    .data-label { font-weight: 600; color: #333; }
+    .data-value { color: #666; }
+    .calculation-info {
+      margin-top: 10px; padding: 10px;
+      background: #fff3cd; border: 1px solid #ffeaa7;
+      border-radius: 4px; font-size: 14px;
+    }
+    .calc-item { margin: 3px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Update Data</h1>
+    <h2><b>ఖాతా పుస్తకంలో డేటాను నవీకరించండి</b></h2>
+
+    <form id="dataForm">
+      <label for="AccountNo">Account Number:</label>
+      <input type="text" id="AccountNo" name="AccountNo" placeholder="ఖాతా సంఖ్య" required>
+
+      <label for="Installment">Installment Amount:</label>
+      <input type="text" id="Installment" name="Installment" placeholder="వాయిదా రకం" required>
+
+      <button type="submit" id="submitBtn">Submit</button>
+    </form>
+
+    <div id="response"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('dataForm');
+    const responseEl = document.getElementById('response');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showResponse(className, message, rowData = null, headers = null, calculations = null) {
+      responseEl.className = className;
+      
+      if (rowData && headers) {
+        let calculationHtml = '';
+        if (calculations) {
+          calculationHtml = `
+            <div class="calculation-info">
+              <strong>Reports:</strong>
+              
+              <div class="calc-item">💰 Total Amount: ${calculations.column6Value}</div>
+              <div class="calc-item">📊 Sum of Installments: ${calculations.sumFromColumn11}</div>
+              <div class="calc-item">🏦 Pending Amount: ${calculations.balanceValue}</div>
+            </div>
+          `;
+        }
+        
+        responseEl.innerHTML = `
+          <div>${message}</div>
+          ${calculationHtml}
+          <div class="row-data">
+            <h3> Data:</h3>
+            ${headers.map((header, index) => `
+              <div class="data-item">
+                <span class="data-label">${header}:</span>
+                <span class="data-value">${rowData[index] || ''}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        responseEl.textContent = message;
+      }
+      
+      responseEl.style.display = 'block';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      showResponse('loading', '⏳ Processing your request...');
+
+      const formData = new FormData(form);
+      const params = new URLSearchParams();
+      for (const [key, value] of formData.entries()) {
+        params.append(key, value);
+      }
+
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbxD8TEH-Pb24UMXkw-lF1O7TnnvourkjkprMxw0Hkh4yO0ESm1kQH5JY3HY-63FfJTd/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: params,
+          mode: 'cors'
+        });
+
+        // Check if response is ok
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        
+        if (data.result === 'success') {
+          showResponse('success', `✅ Updated successfully`, data.rowData, data.headers, data.calculations);
+          form.reset();
+        } else {
+          showResponse('error', `❌ Error: ${data.error || 'Unknown error occurred'}`);
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        showResponse('error', `❌ Network Error: ${err.message}`);
+      } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+      }
+    });
+  </script>
   <script>
     let deferredPrompt;
 
@@ -26,10 +186,5 @@
       navigator.serviceWorker.register('sw.js');
     }
   </script>
-</head>
-<body>
-  <button id="installBtn" onclick="installPWA()" style="display:none;">
-    Install App
-  </button>
 </body>
 </html>
