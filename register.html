@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 300;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #667eea;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .response-data {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+        }
+        #Home-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 9999;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            input, select, textarea {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🪪 New Registration</h1>
+        <form id="accountForm">
+            <div class="form-group">
+                <label for="AcountNo">Account Number / ఖాతా సంఖ్య *</label>
+                <input type="text" id="AcountNo" name="AcountNo" required placeholder="ఖాతా సంఖ్య">
+            </div>
+
+            <div class="form-group">  
+                <label for="Name">Name / పేరు *</label>
+                <input type="text" id="Name" name="Name" required placeholder="పూర్తి పేరు">
+            </div>
+
+            <div class="form-group">  
+                <label for="Address">Address / చిరునామా *</label>
+                <input type="text" id="Address" name="Address" required placeholder="చిరునామా">
+            </div>
+            
+            <div class="form-group">  
+                <label for="MobileNumber">Mobile Number / మొబైల్ నంబర్ *</label>
+                <input type="tel" 
+                       id="MobileNumber" 
+                       name="MobileNumber" 
+                       required 
+                       placeholder="మొబైల్ నంబర్"
+                       pattern="[0-9]{10}"
+                       title="Please enter a valid 10-digit mobile number">
+            </div>
+
+            <div class="form-group">
+                <label for="LoanAmount">Loan Amount / రుణ మొత్తం *</label>
+                <input type="number" 
+                       id="LoanAmount" 
+                       name="Total Loan Amount"
+                       required 
+                       placeholder="రుణ మొత్తం"
+                       min="1"
+                       step="0.01">
+            </div>
+
+            <div class="form-group">  
+                <label for="TotalWeeks">Total Weeks / మొత్తం వారాల వాయిదాలు *</label>
+                <input type="number" 
+                       id="TotalWeeks" 
+                       name="Total Weeks" 
+                       required 
+                       placeholder="మొత్తం వారాల వాయిదాలు"
+                       min="1"
+                       max="104">
+            </div>
+
+        <div class="form-group">  
+                <label for="EMI per Week">EMI per Week / వారానికి EMI *</label>
+                <input type="text" id="EmiPerWeek" name="EMI per Week" required placeholder="వారానికి EMI">
+            </div>
+            <div class="form-group">  
+                <label for="Date of Loan">Date of Loan / రుణం తేదీ *</label>
+                <input type="date" id="LoanDate" name="Date of Loan" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Register / నమోదు చేయండి</button>
+        </form>
+
+        <div id="responseContainer" class="response-container">
+            <div id="responseMessage"></div>
+            <div id="responseData" class="response-data"></div>
+        </div>
+    </div>
+
+
+    <a href="https://lknraut.github.io/Undpwa/"> <button id="Home-btn">Home</button></a>
+    <script>
+        // REPLACE THIS WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW9ktnGezZzSmJOclUTFev92kYaAwo6rX_sjhtjbSqfgG5GpcHs-9Fa7BkgXqMPPPb/exec';
+
+        document.getElementById('accountForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.querySelector('.btn-submit');
+            const responseContainer = document.getElementById('responseContainer');
+            const responseMessage = document.getElementById('responseMessage');
+            const responseData = document.getElementById('responseData');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registering... / నమోదు చేస్తోంది...';
+            responseContainer.style.display = 'block';
+            responseContainer.className = 'response-container loading';
+            responseMessage.textContent = 'Processing your registration... / నిങ్గ నమోదును ప్రాసెస్ చేస్తోంది...';
+            responseData.textContent = '';
+
+            try {
+                // Prepare form data
+                const formData = new FormData(this);
+                
+                // Convert FormData to URLSearchParams for proper POST submission
+                const params = new URLSearchParams();
+                for (let [key, value] of formData.entries()) {
+                    params.append(key, value);
+                }
+
+                // Submit to Google Apps Script
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: params,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.result === 'success') {
+                    // Success response
+                    responseContainer.className = 'response-container success';
+                    responseMessage.innerHTML = `
+                        <strong>✅ Success! / విజయవంతం!</strong><br>
+                        Registration completed successfully! / నమోదు విజయవంతంగా పూర్తయ్యింది!<br>
+                        Row number: ${result.rowNumber || 'N/A'}
+                    `;
+                    
+                    // Show the added data
+                    if (result.rowData && result.headers) {
+                        let dataDisplay = '<strong>Registered Data / నమోదైన వివరాలు:</strong><br>';
+                        result.headers.forEach((header, index) => {
+                            if (result.rowData[index] !== undefined && result.rowData[index] !== '') {
+                                dataDisplay += `${header}: ${result.rowData[index]}<br>`;
+                            }
+                        });
+                        responseData.innerHTML = dataDisplay;
+                    }
+                    
+                    // Reset form after successful submission
+                    this.reset();
+                    
+                } else {
+                    // Error response
+                    responseContainer.className = 'response-container error';
+                    responseMessage.innerHTML = `
+                        <strong>❌ Error! / లోపం!</strong><br>
+                        ${result.message || result.error || 'Unknown error occurred / తెలియని లోపం సంభవించింది'}
+                    `;
+                    responseData.textContent = JSON.stringify(result, null, 2);
+                }
+                
+            } catch (error) {
+                // Network or other errors
+                responseContainer.className = 'response-container error';
+                responseMessage.innerHTML = `
+                    <strong>❌ Network Error! / నెట్‌వర్క్ లోపం!</strong><br>
+                    ${error.message}<br><br>
+                    <small>Make sure you've replaced SCRIPT_URL with your actual Google Apps Script web app URL.</small>
+                `;
+                responseData.textContent = '';
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register / నమోదు చేయండి';
+            }
+        });
+
+        // Auto-hide response after successful submission
+        function hideResponseAfterDelay() {
+            setTimeout(() => {
+                const responseContainer = document.getElementById('responseContainer');
+                if (responseContainer.classList.contains('success')) {
+                    responseContainer.style.display = 'none';
+                }
+            }, 8000); // Increased to 8 seconds for bilingual text
+        }
+
+        // Add animation on load
+        window.addEventListener('load', function() {
+            document.querySelector('.container').style.opacity = '0';
+            document.querySelector('.container').style.transform = 'translateY(50px)';
+            setTimeout(() => {
+                document.querySelector('.container').style.transition = 'all 0.5s ease';
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Set today's date as default for loan date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('LoanDate').value = today;
+        });
+    </script>
+</body>
+</html>
