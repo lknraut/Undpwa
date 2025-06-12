@@ -4,61 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Account Book Entry</title>
-  <script>
-     async function authenticate() {
-          const username = document.getElementById("username").value;
-          const password = document.getElementById("password").value;
-          const errorDiv = document.getElementById("error");
-          errorDiv.textContent = "";
-      
-          if (!username || !password) {
-            errorDiv.textContent = "Please fill in all fields.";
-            return;
-          }
-      
-          try {
-            // Replace with your Google Apps Script URL
-            const response = await fetch("https://script.google.com/macros/s/AKfycbyrmiepfNyBjkbaqT6HCxEQmDqVgtCMppOy0qQfmkoyqxwzMWGHa7bGXA2wK7UiApxh9A/exec");
-            const users = await response.json();
-      
-            const user = users.find(u => u.username === username && u.password === password);
-      
-            if (user) {
-              // Set session storage item for authentication
-              sessionStorage.setItem("isLoggedIn", "true");
-              alert("Login successful!");
-              window.location.href = "https://mgiriradio.github.io/office/login.html"; // Redirect to office
-            } else {
-              errorDiv.textContent = "Invalid username or password.";
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            errorDiv.textContent = "Unable to authenticate. Try again later.";
-          }
-        }
-      </script>
-    <script>https://lknraut.github.io/Undpwa
-    
-        // Check if the user is logged in
-        if (!sessionStorage.getItem("isLoggedIn")) {
-          // Redirect to login page if not authenticated
-          window.location.href = "https://lknraut.github.io/Undpwa";
-        }
-          
-      </script>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {  font-family: 'Inter', sans-serif; }
+    * { font-family: 'Inter', sans-serif; }
     body {
-      background: #f4f4f4; display: flex; justify-content: center;
-        
+      background: #f4f4f4; 
+      display: flex; 
+      justify-content: center;
+      margin: 0;
+      padding: 20px;
     }
-   #Home-btn {
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* Login Form Styles */
+    .login-container {
+      display: block;
+    }
+    .main-container {
+      display: none;
+    }
+    
+    #Home-btn {        
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background: #007bff;
+        background: #033cf8ea;
         color: white;
         padding: 10px 16px;
         border: none;
@@ -67,71 +45,239 @@
         z-index: 9999;
         width: 20%;
         }
+    
     h1, h2 { text-align: center; color: #264601; }
     h2 { font-size: 16px; color: #555; margin-bottom: 30px; }
     label { font-weight: 600; margin-top: 10px; display: block; }
     input, button {
-      width: 100%; padding: 10px; margin-top: 5px;
-      border-radius: 8px; font-size: 16px; border: 1px solid #ccc;
+      width: 100%; 
+      padding: 10px; 
+      margin-top: 5px;
+      border-radius: 8px; 
+      font-size: 16px; 
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     input:focus { border-color: #264601; outline: none; }
     button {
-      background: #264601; color: white; margin-top: 20px;
-      font-weight: bold; cursor: pointer; border: none;
+      background: #264601; 
+      color: white; 
+      margin-top: 20px;
+      font-weight: bold; 
+      cursor: pointer; 
+      border: none;
       transition: background 0.3s ease;
     }
     button:hover { background: #1b3900; }
     button:disabled { background: #ccc; cursor: not-allowed; }
-    #response {
-      margin-top: 15px; padding: 10px;
-      border-radius: 8px; text-align: center;
+    
+    .logout-btn {        
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: #f80303ea;
+        color: white;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        z-index: 9999;
+        width: 20%;
+        }
+
+    .logout-btn:hover { background: #c82333; }
+    
+    #response, #error {
+      margin-top: 15px; 
+      padding: 10px;
+      border-radius: 8px; 
+      text-align: center;
       display: none;
     }
     .success { background: #d4edda; color: #155724; }
     .error { background: #f8d7da; color: #721c24; }
     .loading { background: #d1ecf1; color: #0c5460; }
+    
     .row-data {
-      margin-top: 15px; padding: 15px;
-      background: #e7f3ff; border: 1px solid #b3d9ff;
-      border-radius: 8px; text-align: left;
+      margin-top: 15px; 
+      padding: 15px;
+      background: #e7f3ff; 
+      border: 1px solid #b3d9ff;
+      border-radius: 8px; 
+      text-align: left;
     }
     .row-data h3 { margin: 0 0 10px 0; color: #264601; }
     .data-item { 
-      margin: 5px 0; padding: 5px; 
-      background: white; border-radius: 4px;
-      display: flex; justify-content: space-between;
+      margin: 5px 0; 
+      padding: 5px; 
+      background: white; 
+      border-radius: 4px;
+      display: flex; 
+      justify-content: space-between;
     }
     .data-label { font-weight: 600; color: #333; }
     .data-value { color: #666; }
     .calculation-info {
-      margin-top: 10px; padding: 10px;
-      background: #fff3cd; border: 1px solid #ffeaa7;
-      border-radius: 4px; font-size: 14px;
+      margin-top: 10px; 
+      padding: 10px;
+      background: #fff3cd; 
+      border: 1px solid #ffeaa7;
+      border-radius: 4px; 
+      font-size: 14px;
     }
     .calc-item { margin: 3px 0; }
   </style>
 </head>
 <body>
-  
   <div class="container">
-    <a href="https://lknraut.github.io/Undpwa/register.html"> <button id="Home-btn">Register User</button></a>
-    <h1>Update Data</h1>
-    <h2><b>ఖాతా పుస్తకంలో డేటాను నవీకరించండి</b></h2>
+    <!-- Login Form -->
+     
+    <div id="loginContainer" class="login-container">
+      <h1>Login Required</h1>
+      <h2><b>లాగిన్ అవసరం</b></h2>
+      
+      <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="వినియోగదారు పేరు" required>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="పాస్‌వర్డ్" required>
+        
+        <button type="submit" id="loginBtn">Login</button>
+      </form>
+      
+      <div id="error"></div>
+    </div>
 
-    <form id="dataForm">
-      <label for="AccountNo">Account Number:</label>
-      <input type="text" id="AccountNo" name="AccountNo" placeholder="ఖాతా సంఖ్య" required>
+    <!-- Main Application -->
+    <div id="mainContainer" class="main-container">
+      <button id="Home-btn" onclick="window.open('https://lknraut.github.io/Undpwa/register.html', '_blank')">Register User</button>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Update Data</h1>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+      <h2><b>ఖాతా పుస్తకంలో డేటాను నవీకరించండి</b></h2>
 
-      <label for="Installment">Installment Amount:</label>
-      <input type="text" id="Installment" name="Installment" placeholder="వాయిదా రకం" required>
+      <form id="dataForm">
+        <label for="AccountNo">Account Number:</label>
+        <input type="text" id="AccountNo" name="AccountNo" placeholder="ఖాతా సంఖ్య" required>
 
-      <button type="submit" id="submitBtn">Submit</button>
-    </form>
+        <label for="Installment">Installment Amount:</label>
+        <input type="text" id="Installment" name="Installment" placeholder="వాయిదా రకం" required>
 
-    <div id="response"></div>
+        <button type="submit" id="submitBtn">Submit</button>
+      </form>
+
+      <div id="response"></div>
+    </div>
   </div>
 
   <script>
+    // Authentication state management
+    let isAuthenticated = false;
+    
+    // Check authentication on page load
+    window.addEventListener('DOMContentLoaded', function() {
+      checkAuthStatus();
+    });
+    
+    function checkAuthStatus() {
+      // Check if user is already logged in (using memory storage)
+      if (isAuthenticated) {
+        showMainApp();
+      } else {
+        showLoginForm();
+      }
+    }
+    
+    function showLoginForm() {
+      document.getElementById('loginContainer').style.display = 'block';
+      document.getElementById('mainContainer').style.display = 'none';
+    }
+    
+    function showMainApp() {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('mainContainer').style.display = 'block';
+    }
+
+    // Login form handler
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      await authenticate();
+    });
+
+    async function authenticate() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("error");
+      const loginBtn = document.getElementById("loginBtn");
+      
+      errorDiv.textContent = "";
+      errorDiv.style.display = "none";
+
+      if (!username || !password) {
+        showError("Please fill in all fields.");
+        return;
+      }
+
+      // Show loading state
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Logging in...";
+
+      try {
+        // Replace with your Google Apps Script URL for authentication
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyrmiepfNyBjkbaqT6HCxEQmDqVgtCMppOy0qQfmkoyqxwzMWGHa7bGXA2wK7UiApxh9A/exec");
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const users = await response.json();
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (user) {
+          // Set authentication state
+          isAuthenticated = true;
+          showMainApp();
+          
+          // Clear login form
+          document.getElementById('loginForm').reset();
+          
+          
+        } else {
+          showError("Invalid username or password.");
+        }
+      } catch (error) {
+        console.error("Authentication error:", error);
+        showError("Unable to authenticate. Please check your connection and try again.");
+      } finally {
+        // Reset button state
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById("error");
+      errorDiv.textContent = message;
+      errorDiv.className = "error";
+      errorDiv.style.display = "block";
+    }
+
+    function logout() {
+      isAuthenticated = false;
+      showLoginForm();
+      
+      // Clear any forms
+      document.getElementById('loginForm').reset();
+      document.getElementById('dataForm').reset();
+      
+      // Clear response
+      document.getElementById('response').style.display = 'none';
+    }
+
+    // Main application form handler
     const form = document.getElementById('dataForm');
     const responseEl = document.getElementById('response');
     const submitBtn = document.getElementById('submitBtn');
@@ -145,7 +291,6 @@
           calculationHtml = `
             <div class="calculation-info">
               <strong>Reports:</strong>
-              
               <div class="calc-item">💰 Total Amount: ${calculations.column6Value}</div>
               <div class="calc-item">📊 Sum of Installments: ${calculations.sumFromColumn11}</div>
               <div class="calc-item">🏦 Pending Amount: ${calculations.balanceValue}</div>
@@ -157,7 +302,7 @@
           <div>${message}</div>
           ${calculationHtml}
           <div class="row-data">
-            <h3> Data:</h3>
+            <h3>Data:</h3>
             ${headers.map((header, index) => `
               <div class="data-item">
                 <span class="data-label">${header}:</span>
@@ -175,6 +320,13 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Check if user is authenticated before submitting
+      if (!isAuthenticated) {
+        showResponse('error', '❌ Please login first');
+        showLoginForm();
+        return;
+      }
 
       // Show loading state
       submitBtn.disabled = true;
@@ -197,7 +349,6 @@
           mode: 'cors'
         });
 
-        // Check if response is ok
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -214,19 +365,18 @@
         console.error('Fetch error:', err);
         showResponse('error', `❌ Network Error: ${err.message}`);
       } finally {
-        // Reset button state
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit';
       }
     });
-  </script>
-  <script>
+
+    // PWA Installation
     let deferredPrompt;
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      document.getElementById('installBtn').style.display = 'block';
+      // You can add an install button here if needed
     });
 
     function installPWA() {
@@ -239,7 +389,9 @@
     }
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('Service worker registration failed:', err);
+      });
     }
   </script>
 </body>
